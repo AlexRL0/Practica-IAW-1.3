@@ -28,3 +28,6 @@ mysql -u root <<< "CREATE DATABASE $DB_NAME"
 mysql -u root <<< "DROP USER IF EXISTS '$DB_USER'@'%'"
 mysql -u root <<< "CREATE USER '$DB_USER'@'%' IDENTIFIED BY '$DB_PASSWORD'"
 mysql -u root <<< "GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'%'"
+
+#Creamos las tablas de la base de datos
+mysql -u root < /temp/iaw-practica-lamp/db/database.sql
