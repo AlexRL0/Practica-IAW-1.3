@@ -36,17 +36,6 @@ mv /var/www/html/adminer/adminer-4.8.1-mysql.php /var/www/html/adminer/index.php
 #Paso 4. Modificamos el propietario y el grupo del archivo
 chown -R www-data:www-data /var/www/html/adminer
 
-
-#--------------------------------------------------------------------------------------------------------------
-#Creamos una base de datos de ejemplo
-mysql -u root <<< "DROP DATABASE IF EXISTS $DB_NAME"
-mysql -u root <<< "CREATE DATABASE $DB_NAME"
-
-#Creamos un usuario para la base de datos de ejemplo
-mysql -u root <<< "DROP USER IF EXISTS '$DB_USER'@'%'"
-mysql -u root <<< "CREATE USER '$DB_USER'@'%' IDENTIFIED BY '$DB_PASSWORD'"
-mysql -u root <<< "GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'%'"
-
 #---------------------------------------------------------------------------------------------------------------
 #Instalamos la herramienta goaccess
 
