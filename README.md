@@ -8,15 +8,15 @@
 
 **Una vez creados los archivos y directorios, procedemos a la instalación de las herramientas.**
 
-## Instalación de Apache HTTP Server, PHP y MySQL Server en Ubuntu Server
+## Despliegue de una aplicación web LAMP sencilla
 
 ## 1. Creación del archivo `install_lamp.sh` para la automatización del proceso de instalación
 
 ### Actualizamos el sistema y mostramos los comandos que se van ejecutando. 
 
 ```
-sudo apt update
-sudo apt upgrade -y
+apt update
+apt upgrade -y
 ```
 
 ```
@@ -45,7 +45,7 @@ cp ../conf/000-default.conf /etc/apache2/sites-available
 
 > [!IMPORTANT]  
 > Tenemos que hacer un archivo de configuración llamado `000-default.conf` y copiarlo en los sitios disponibles de apache para que lo podamos habilitar. El archivo `000-default.conf` tiene que quedar como en la imagen:   
-![](imagenes/000-default.conf.png)
+![](imagenes/000-default.conf-1.3.png)
 
 
 ### Paso 4: Instalamos PHP y algunos módulos para Apache y MySQL
@@ -93,13 +93,9 @@ chown -R www-data:www-data /var/www/html
 ```
 **:warning:Lo modificamos ya que el grupo www-data pertenece al usuario con el que se ejecuta el servicio Apache y necesita permisos para ver, leer y escribir dentro de ese directorio.**
 
-### Paso 4: comprobación de que la página `index.php` funciona
+### Paso 4: comprobación de que el servicio `MySQLServer` funciona
 
-![](imagenes/index.php.png)
-
-### Paso 5: comprobación de que el servicio `MySQLServer` funciona
-
-![](imagenes/mysqlserver.png)
+![](imagenes/mysqlserver-1.3.png)
 
 ---
 ## 2. Creación del archivo `install_tools.sh` para la automatización del proceso de instalación
@@ -119,8 +115,8 @@ source .env
 ### Actualizamos el sistema y mostramos los comandos que se van ejecutando 
 
 ```
-sudo apt update
-sudo apt upgrade -y
+apt update
+apt upgrade -y
 ```
 
 ```
@@ -166,7 +162,7 @@ mysql -u root <<< "GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'%'"
 
 ### Paso 4: comprobación de que la página `phpMyAdmin` funciona
 
-![](imagenes/phpmyadmin.png)
+![](imagenes/phpmyadmin-1.3.png)
 
 
 ## 2.3 Instalacion de Adminer
@@ -204,7 +200,7 @@ chown -R www-data:www-data /var/www/html/adminer
 
 ### Paso 5: comprobación de que la página `adminer` funciona
 
-![](imagenes/adminer.png)
+![](imagenes/adminer-1.3.png)
 
 ## 2.4 Instalacion de la herramienta GoAcces
 
@@ -231,95 +227,14 @@ goaccess /var/log/apache2/access.log -o /var/www/html/stats/index.html --log-for
 
 ---
 
-## 3. Control de acceso a un directorio con autenticación básica
+## 2.5 Creación del archivo `deploy.sh` para la automatización del proceso del despliegue web
 
-### Paso 1: Copiamos el archivo de configuracion de `stats`
-
-```
-cp ../conf/000-default.stats.conf /etc/apache2/sites-available
-```
-
-> [!IMPORTANT]  
-> Tenemos que hacer otro archivo de configuración llamado `000-default.stats.conf` y copiarlo en los sitios disponibles de apache para que lo podamos habilitar más tarde.  
-El archivo `000-default.stats.conf` tiene que quedar como en la imagen:
-![](imagenes/000-default.stats.conf.png)
-
-### Paso 2: Deshabilitamos el virtualhost que hay por defecto
+### Importamos el archivo de variables y mostramos los comandos que se van ejecutando 
 
 ```
-a2dissite 000-default.conf
+source .env
 ```
 
-**Esto lo hacemos para poder habilitar el otro archivo que hemos copiado, es decir, el `000-default.stats.conf`**.
-
-### Paso 3: Habilitamos el nuevo virtualhost
-
 ```
-a2ensite 000-default.stats.conf
+set -ex
 ```
-
-### Paso 4: Hacemos un reload al servicio apache
-
-```
-systemctl reload apache2
-```
-
-### Paso 5: Creamos el archivo de contraseñas
-
-```
-htpasswd -bc /etc/apache2/.htpasswd $STATS_USERNAME $STATS_PASSWORD
-```
-
-**Esto se hace para que sea más seguro y pida un usuario y contraseña a la hora de entrar a la página web**
-
----
-
-## 4. Control de acceso a un directorio con `.htaccess`
-
-### Paso 1: Copiamos el archivo de configuracion de `.htaccess`
-
-```
-cp ../conf/000-default-htaccess.conf /etc/apache2/sites-available
-```
-
-> [!IMPORTANT]  
-> Tenemos que hacer otro archivo de configuración llamado `000-default-htaccess.conf` y copiarlo en los sitios disponibles de apache para que lo podamos habilitar más tarde.  
-El archivo `000-default-htaccess.conf` tiene que quedar como en la imagen:
-![](imagenes/000-default-htaccess.conf.png)
-
-### Paso 2: Deshabilitamos el virtualhost `000-default-stats.conf`
-
-```
-a2dissite 000-default.stats.conf
-```
-
-### Paso 3: Habilitamos el nuevo virtualhost `000-default-htaccess.conf`
-
-```
-a2ensite 000-default-htaccess.conf
-```
-
-### Paso 4: Hacemos un reload al servicio de apache
-
-```
-systemctl reload apache2
-```
-
-### Paso 5: Copiamos el archivo `.htaccess` a `/var/www/html/stats`
-
-```
-cp ../conf/.htaccess /var/www/html/stats
-```
-
-> [!IMPORTANT]  
-> Tenemos que hacer un archivo de configuración llamado `.htaccess` y copiarlo en la ruta de `stats` para que coja la configuración del archivo y al entrar a la web nos pida las credenciales necesarias.  
-El archivo `.htaccess` tiene que quedar como en la imagen:
-![](imagenes/htaccess.png)
-
-### Paso 6: comprobación de que la autenticación funciona
-
-![](imagenes/stats.png)
-
-### Paso 7: comprobación de que la página funciona
-
-![](imagenes/stats2.png)
