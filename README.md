@@ -1,10 +1,10 @@
-# Practica-IAW-1.3- Instalación de Apache HTTP Server, PHP y MySQL Server en Ubuntu Server
+# Practica-IAW-1.3- Despliegue de una aplicación web LAMP sencilla
 
 ## Pasos previos a la instalación
 
 **para la instalación vamos a tener que crear la siguiente estructura de directorios y archivos:**
 
-![](imagenes/directorio.png)
+![](imagenes/directorio-1.3.png)
 
 **Una vez creados los archivos y directorios, procedemos a la instalación de las herramientas.**
 
